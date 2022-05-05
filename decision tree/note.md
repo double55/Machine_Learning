@@ -110,3 +110,52 @@ $$\frac{5}{14}*0.971 + \frac{4}{14}*0 + \frac{5}{14}*0.971 = 0.693$$
 
 Gain(outlook)最大(即outlook在第一步使系统的信息熵下降的最快)，所以决策树的根节点就取outlook。
 
+**信息增益率（C4.5 算法）**
+
+$$Gain_ratio(outlook) = \frac{Gain(outlook)}{Entropy(outlook)} = \frac{Entropy-Entropy(outlook)}{Entropy(outlook)} = \frac{0.247}{0.971}$$
+
+- Gain_ratio(outlook)为outlook的信息增益率
+- Gain(outlook)：outlook的信息增益
+- Entropy(outlook)：outlook的信息熵
+- Entropy：系统熵
+
+**基尼指数（Cart 算法）**
+
+$$Gini系数 = Gini(p) = \sum_{k=1}^{K}p_{k}(1-p_k) = 1 - \sum_{k=1}^Kp_k^2$$
+
+![](./img/dec_03.png)
+
+![](./img/dec_04.png)
+
+```
+Gini(X,A) 
+    = p(sunny) * Gini(X|outlook=sunny)
+      +
+      p(overcast) * Gini(X|outlook=overcast)
+      +
+      p(rainy) * Gini(X|outlook=rainy)
+    = p(sunny) * {1 - [p(play=yes|sunny)^2 + p(play=no|sunny)^2]}
+      + 
+      p(overcast) * {1 - [p(play=yes|overcast)^2 + p(play=no|overcast)^2]}
+      +
+      p(rainy) * {1 - [p(play=yes|rainy)^2 + p(play=no|rainy)^2]}
+    = 5/14 * {1 - [(2/5)^2 + (3/5)^2]}
+      +
+      4/14 * {1 - [1]}
+      +
+      5/14 * {1 - [(3/5)^2 + (2/5)^2]}
+    = 0.343
+```
+
+## 总结
+
+**信息增益（ID3 算法）**的缺点
+
+如果我们把“编号”作为一个属性（一般情况下不会这么做，这里只是举个例子），那么“编号”将会被选为最优属性 。但实际上“编号”是无关属性的，它对“打篮球”的分类并没有太大作用。
+
+所以 ID3 有一个缺陷就是，有些属性可能对分类任务没有太大作用，但是他们仍然可能会被选为最优属性。这种缺陷不是每次都会发生，只是存在一定的概率。在大部分情况下，ID3 都能生成不错的决策树分类。针对可能发生的缺陷，后人提出了新的算法进行改进。
+
+**信息增益（ID3 算法）** 与 **信息增益率（C4.5 算法）** 比较
+
+- ID3 算法的优点是方法简单，缺点是对噪声敏感。训练数据如果有少量错误，可能会产生决策树分类错误。
+- C4.5 在 ID3 的基础上，用信息增益率代替了信息增益，解决了噪声敏感的问题，并且可以对构造树进行剪枝、处理连续数值以及数值缺失等情况，但是由于 C4.5 需要对数据集进行多次扫描，算法效率相对较低。
